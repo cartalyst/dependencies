@@ -2,7 +2,7 @@
 	"name": "cartalyst/dependencies",
 	"description": "Simple dependency resolution and sorting.",
 	"keywords": ["platform", "ecommerce", "laravel", "bootstrap"],
-	"license": "BSD License (3-clause)",
+	"license": "BSD-3-Clause",
 	"authors": [
 		{
 			"name": "Cartalyst LLC",
