@@ -46,14 +46,14 @@ class DependencySorterTest extends PHPUnit_Framework_TestCase {
 			'fred/corge' => array('baz/qux'),
 		);
 
-		$this->assertEquals($sorter->items, $expected);
+		$this->assertEquals($sorter->getItems(), $expected);
 	}
 
 	public function testDependenciesCanBeSorted()
 	{
 		$sorter = new DependencySorter;
 		$sorter->add('baz/qux', array('foo/bar'));
-		$sorter->add('fred/corge', array('baz/qux'));
+		$sorter->add('fred/corge', 'baz/qux'); // Test string dependencies
 		$sorter->add('foo/bar');
 
 		$expected = array('foo/bar', 'baz/qux', 'fred/corge');
@@ -61,6 +61,31 @@ class DependencySorterTest extends PHPUnit_Framework_TestCase {
 		// Because the order of our array matters, we'll implode it
 		// and compare the two string match
 		$this->assertEquals(implode('.', $expected), implode('.', $sorter->sort()));
+	}
+
+	public function testDependentInstances()
+	{
+		$sorter = new DependencySorter;
+
+		$dep1 = m::mock('Cartalyst\Dependencies\DependentInterface');
+		$dep1->shouldReceive('getSlug')->andReturn('baz/qux');
+		$dep1->shouldReceive('getDependencies')->andReturn(array('foo/bar'));
+		$sorter->add($dep1);
+
+		$dep2 = m::mock('Cartalyst\Dependencies\DependentInterface');
+		$dep2->shouldReceive('getSlug')->andReturn('fred/corge');
+		$dep2->shouldReceive('getDependencies')->andReturn('baz/qux');
+		$sorter->add($dep2);
+
+		$dep3 = m::mock('Cartalyst\Dependencies\DependentInterface');
+		$dep3->shouldReceive('getSlug')->andReturn('foo/bar');
+		$dep3->shouldReceive('getDependencies')->andReturn(array());
+		$sorter->add($dep3);
+
+		$this->assertCount(3, $sorted = $sorter->sort());
+		$this->assertEquals($dep3, $sorted[0]);
+		$this->assertEquals($dep1, $sorted[1]);
+		$this->assertEquals($dep2, $sorted[2]);
 	}
 
 	/**
