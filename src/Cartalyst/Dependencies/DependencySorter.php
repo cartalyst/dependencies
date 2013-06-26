@@ -36,6 +36,20 @@ class DependencySorter {
 	protected $dependents = array();
 
 	/**
+	 * Create a new sorter.
+	 *
+	 * @param  array  $items
+	 * @return void
+	 */
+	public function __construct(array $items = array())
+	{
+		foreach ($items as $item)
+		{
+			call_user_func_array(array($this, 'add'), $item);
+		}
+	}
+
+	/**
 	 * Adds a new item to the sorter.
 	 *
 	 * @param  string  $item

@@ -99,6 +99,15 @@ class DependencySorterTest extends PHPUnit_Framework_TestCase {
 		$sorter->sort();
 	}
 
+	public function testFoo()
+	{
+		$sorter = new DependencySorter;
+		$sorter->add('foo', ['bar', 'baz']);
+		$sorter->add('baz');
+		$sorter->add('bar', 'foo');
+		var_dump($sorter->sort());
+	}
+
 	/**
 	 * @expectedException UnexpectedValueException
 	 */
