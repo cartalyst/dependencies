@@ -25,18 +25,47 @@ class DependencySorter {
 	 *
 	 * @var array
 	 */
-	public $items = array();
+	protected $items = array();
+
+	/**
+	 * Array of dependent instances associated with the
+	 * items.
+	 *
+	 * @var array
+	 */
+	protected $dependents = array();
+
+	/**
+	 * Create a new sorter.
+	 *
+	 * @param  array  $items
+	 * @return void
+	 */
+	public function __construct(array $items = array())
+	{
+		foreach ($items as $item)
+		{
+			call_user_func_array(array($this, 'add'), $item);
+		}
+	}
 
 	/**
 	 * Adds a new item to the sorter.
 	 *
 	 * @param  string  $item
-	 * @param  string  $dependencies
+	 * @param  string|array  $dependencies
 	 * @return void
 	 */
-	public function add($item, array $dependencies = array())
+	public function add($item, $dependencies = array())
 	{
-		$this->items[$item] = $dependencies;
+		if ($item instanceof DependentInterface)
+		{
+			$this->addDependent($item);
+		}
+		else
+		{
+			$this->addItem($item, $dependencies);
+		}
 	}
 
 	/**
@@ -61,7 +90,54 @@ class DependencySorter {
 			}
 		}
 
-		return array_values($sorted);
+		return $this->retrieve($sorted);
+	}
+
+	/**
+	 * Get the items for the sorter.
+	 *
+	 * @return array
+	 */
+	public function getItems()
+	{
+		return $this->items;
+	}
+
+	/**
+	 * Get the dependents for the sorter.
+	 *
+	 * @return array
+	 */
+	public function getDependents()
+	{
+		return $this->dependents;
+	}
+
+	/**
+	 * Adds a new item to the sorter.
+	 *
+	 * @param  string  $item
+	 * @param  string|array  $dependencies
+	 * @return void
+	 */
+	protected function addItem($item, $dependencies = array())
+	{
+		$this->items[$item] = (array) $dependencies;
+	}
+
+	/**
+	 * Adds a new dependent instance to the sorter.
+	 *
+	 * @param  Cartalyst\Dependencies\DependentInterface  $dependent
+	 * @return void
+	 */
+	protected function addDependent(DependentInterface $dependent)
+	{
+		$slug = $dependent->getSlug();
+
+		$this->dependents[$slug] = $dependent;
+
+		$this->addItem($slug, $dependent->getDependencies());
 	}
 
 	/**
@@ -135,6 +211,33 @@ class DependencySorter {
 		}
 
 		return true;
+	}
+
+	/**
+	 * Takes an array of sorted items and returns the
+	 * associated dependent if it exists, or simply
+	 * the item if not.
+	 *
+	 * @param  array $sorted
+	 * @return array $retrieved
+	 */
+	protected function retrieve(array $sorted)
+	{
+		$retrieved = array();
+
+		foreach ($sorted as $slug)
+		{
+			if (array_key_exists($slug, $this->dependents))
+			{
+				$retrieved[] = $this->dependents[$slug];
+			}
+			else
+			{
+				$retrieved[] = $slug;
+			}
+		}
+
+		return $retrieved;
 	}
 
 }
