@@ -63,6 +63,17 @@ class DependencySorterTest extends PHPUnit_Framework_TestCase {
 		$this->assertEquals(implode('.', $expected), implode('.', $sorter->sort()));
 	}
 
+	public function testPassingConstructArguments()
+	{
+		$sorter = new DependencySorter(array(
+			array('baz/qux', 'foo/bar'),
+			array('fred/corge'),
+		));
+
+		$expected = array('baz/qux' => array('foo/bar'), 'fred/corge' => array());
+		$this->assertEquals($expected, $sorter->getItems());
+	}
+
 	public function testDependentInstances()
 	{
 		$sorter = new DependencySorter;
@@ -97,15 +108,6 @@ class DependencySorterTest extends PHPUnit_Framework_TestCase {
 		$sorter->add('foo/bar', array('bar/foo'));
 		$sorter->add('bar/foo', array('foo/bar'));
 		$sorter->sort();
-	}
-
-	public function testFoo()
-	{
-		$sorter = new DependencySorter;
-		$sorter->add('foo', ['bar', 'baz']);
-		$sorter->add('baz');
-		$sorter->add('bar', 'foo');
-		var_dump($sorter->sort());
 	}
 
 	/**
