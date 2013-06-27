@@ -149,7 +149,15 @@ class DependencySorter {
 
 		$this->dependents[$slug] = $dependent;
 
-		$this->addItem($slug, $dependent->getDependencies());
+		$dependencies = array_map(function($dependency)
+		{
+			if ($dependency instanceof DependentInterface) return $dependency->getSlug();
+
+			return $dependency;
+
+		}, (array) $dependent->getDependencies());
+
+		$this->addItem($slug, $dependencies);
 	}
 
 	/**
