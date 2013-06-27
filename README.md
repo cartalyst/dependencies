@@ -84,7 +84,7 @@ class Asset implements Cartalyst\Dependencies\DependentInterface {
 // Queue assets in a dependency sorter
 $sorter = new Cartalyst\DependencySorter(array(
 	new Asset('bootstrap', 'js/bootstrap-2.3.1.js', 'jquery'),
-	new Asset('jquery', 'js/bootstrap-1.9.1.min.js'),
+	new Asset('jquery', 'js/jquery-1.9.1.min.js'),
 	new Asset('main', 'js/main.js', array('jquery', 'bootstrap')),
 ));
 $assets = $sorter->sort();
