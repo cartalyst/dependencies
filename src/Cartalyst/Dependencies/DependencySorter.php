@@ -45,7 +45,19 @@ class DependencySorter {
 	{
 		foreach ($items as $item)
 		{
-			call_user_func_array(array($this, 'add'), $item);
+			if ($item instanceof DependentInterface)
+			{
+				$this->add($item);
+			}
+			elseif (count($item) > 1)
+			{
+				list($item, $dependencies) = $item;
+				$this->add($item, $dependencies);
+			}
+			else
+			{
+				$this->add($item[0]);
+			}
 		}
 	}
 
