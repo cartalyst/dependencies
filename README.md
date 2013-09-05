@@ -1,96 +1,36 @@
-# cartalyst/dependencies
+#Dependencies
+Our dependencies package is a simple package which allows you to sort dependencies, be it assets, simple strings, or class instances. It's clever enough to avoid circular dependencies in a never-ending loop. Part of the Cartalyst Arsenal & licensed [OSI BSD 3](license.md). Code well, rock on.
 
-Our dependencies package is a simple package which allows you to sort dependencies, be it assets, simple strings, or class instances. It's clever enough to avoid circular dependencies in a never-ending loop.
+##Package Story
 
-### Installation
+History and future capabilities.
 
-Installation is as easy as adding the following to your composer.json:
 
-```json
-{
-	"repositories": [
-		{
-			"type": "composer",
-			"url": "http://packages.cartalyst.com"
-		}
-	],
-	"require": {
-		"cartalyst/dependences": "1.0.*"
-	}
-}
-```
+Versioning
+----------
 
-### Usage
+We version under the [Semantic Versioning](http://semver.org/) guidelines as much as possible.
 
-Is ridiculously simple too:
+Releases will be numbered with the following format:
 
-```php
-$sorter = new Cartalyst\Dependencies\DependencySorter;
+`<major>.<minor>.<patch>`
 
-// Add a "foo" item who depends on "bar" and "baz"
-$sorter->add('foo', array('bar', 'baz'));
-$sorter->add('baz');
-$sorter->add('bar', 'baz');
+And constructed with the following guidelines:
 
-var_dump($sorter->sort()); // Will spit out array('baz', 'bar', 'foo');
+* Breaking backward compatibility bumps the major (and resets the minor and patch)
+* New additions without breaking backward compatibility bumps the minor (and resets the patch)
+* Bug fixes and misc changes bumps the patch
 
-// Circular dependencies are recognized and an exception
-// will be thrown rather than a never-ending sorting loop.
-$sorter->add('foo', array('bar', 'baz'));
-$sorter->add('baz');
-$sorter->add('bar', 'foo');
-var_dump($sorter->sort());
+Support
+--------
 
-// UnexpectedValueException: Item [foo] and [bar] have a circular dependency.
-```
+Have a bug? Please create an issue here on GitHub that conforms with [necolas's guidelines](https://github.com/necolas/issue-guidelines).
 
-#### DependentInterface
+https://github.com/cartalyst/dependencies/issues
 
-Our sorter also has the ability to take classes which implement `Cartalyst\Dependencies\DependentInterface`. Let's use the following, simplified asset example:
+Follow us on Twitter, [@cartalyst](http://twitter.com/cartalyst).
 
-```php
-class Asset implements Cartalyst\Dependencies\DependentInterface {
+Join us for a chat on IRC.
 
-	protected $slug;
-
-	protected $path;
-
-	protected $dependencies = array();
-
-	public function __construct($slug, $path, $dependencies = array())
-	{
-		$this->slug = $slug;
-		$this->path = $path;
-		$this->dependencies = $dependencies;
-	}
-
-	public function getSlug()
-	{
-		return $this->slug;
-	}
-
-	public function getDependencies()
-	{
-		return $this->dependencies;
-	}
-
-	public function getPath()
-	{
-		return $this->path;
-	}
-
-}
-
-// Queue assets in a dependency sorter
-$sorter = new Cartalyst\DependencySorter(array(
-	new Asset('bootstrap', 'js/bootstrap-2.3.1.js', 'jquery'),
-	new Asset('jquery', 'js/bootstrap-1.9.1.min.js'),
-	new Asset('main', 'js/main.js', array('jquery', 'bootstrap')),
-));
-$assets = $sorter->sort();
-
-// In your view
-@foreach ($assets as $asset)
-	<script src="{{ $asset->getPath() }}"></script>
-@endforeach
-```
+Server: irc.freenode.net
+Channel: #cartalyst
