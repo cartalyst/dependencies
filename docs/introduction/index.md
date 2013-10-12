@@ -1,4 +1,4 @@
-### Dependencies
+## Dependencies
 
 Simple dependency resolution and sorting.
 
