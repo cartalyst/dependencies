@@ -45,7 +45,7 @@ class DependencySorter {
 	{
 		foreach ($items as $item)
 		{
-			call_user_func_array(array($this, 'add'), $item);
+			$this->add($item);
 		}
 	}
 
