@@ -1,5 +1,3 @@
 ## Dependencies
 
-Simple dependency resolution and sorting.
-
-This component is in beta, documentation coming soon.
+The dependencies package is a simple package which allows you to sort dependencies, be it assets, simple strings, or class instances. It's clever enough to avoid circular dependencies in a never-ending loop.

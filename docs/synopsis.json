@@ -1,9 +1,7 @@
 {
 	"name" : "Dependencies",
-	"type" : "package",
-	"public" : false,
 	"branch" : "master",
 	"github" : "cartalyst/dependencies",
 	"travis" : false,
-	"demo" : false
+	"demo" : null
 }
