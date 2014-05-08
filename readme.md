@@ -1,7 +1,7 @@
 #Dependencies
-Our dependencies package is a simple package which allows you to sort dependencies, be it assets, simple strings, or class instances. It's clever enough to avoid circular dependencies in a never-ending loop. 
+Our dependencies package is a simple package which allows you to sort dependencies, be it assets, simple strings, or class instances. It's clever enough to avoid circular dependencies in a never-ending loop.
 
-Part of the Cartalyst Arsenal & licensed [OSI BSD 3](license.txt). Code well, rock on.
+Part of the Cartalyst Arsenal & licensed [Cartalyst PSL](license.txt). Code well, rock on.
 
 ##Package Story
 
