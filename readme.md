@@ -1,4 +1,7 @@
 #Dependencies
+
+[![Build Status](http://ci.cartalyst.com/build-status/svg/12)](http://ci.cartalyst.com/build-status/view/12)
+
 Our dependencies package is a simple package which allows you to sort dependencies, be it assets, simple strings, or class instances. It's clever enough to avoid circular dependencies in a never-ending loop.
 
 Part of the Cartalyst Arsenal & licensed [Cartalyst PSL](license.txt). Code well, rock on.
