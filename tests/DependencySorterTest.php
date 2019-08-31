@@ -1,5 +1,6 @@
 <?php
-/**
+
+/*
  * Part of the Dependencies package.
  *
  * NOTICE OF LICENSE
@@ -18,107 +19,154 @@
  * @link       http://cartalyst.com
  */
 
-use Mockery as m;
+namespace Cartalyst\Dependencies\Tests;
+
+use UnexpectedValueException;
+use PHPUnit\Framework\TestCase;
 use Cartalyst\Dependencies\DependencySorter;
+use Cartalyst\Dependencies\DependentInterface;
 
-class DependencySorterTest extends PHPUnit_Framework_TestCase {
+class DependencySorterTest extends TestCase
+{
+    /** @test */
+    public function dependencies_can_be_added_to_the_sorter_through_the_constructor()
+    {
+        $sorter = new DependencySorter([
+            'foo/bar'    => [],
+            'baz/qux'    => ['foo/bar'],
+            'fred/corge' => ['baz/qux'],
+        ]);
 
-	/**
-	 * Close mockery.
-	 *
-	 * @return void
-	 */
-	public function tearDown()
-	{
-		m::close();
-	}
+        $expected = [
+            'foo/bar'    => [],
+            'baz/qux'    => ['foo/bar'],
+            'fred/corge' => ['baz/qux'],
+        ];
 
-	public function testDependenciesCanBeAddedToSorter()
-	{
-		$sorter = new DependencySorter;
-		$sorter->add('foo/bar');
-		$sorter->add('baz/qux', array('foo/bar'));
-		$sorter->add('fred/corge', array('baz/qux'));
+        $this->assertSame($expected, $sorter->getItems());
+    }
 
-		$expected = array(
-			'foo/bar'    => array(),
-			'baz/qux'    => array('foo/bar'),
-			'fred/corge' => array('baz/qux'),
-		);
+    /** @test */
+    public function dependencies_can_be_added_to_the_sorter_through_the_setter()
+    {
+        $sorter = new DependencySorter();
 
-		$this->assertEquals($sorter->getItems(), $expected);
-	}
+        $sorter->add('foo/bar');
+        $sorter->add('baz/qux', ['foo/bar']);
+        $sorter->add('fred/corge', ['baz/qux']);
 
-	public function testDependenciesCanBeSorted()
-	{
-		$sorter = new DependencySorter;
-		$sorter->add('baz/qux', array('foo/bar'));
-		$sorter->add('fred/corge', 'baz/qux'); // Test string dependencies
-		$sorter->add('foo/bar');
+        $expected = [
+            'foo/bar'    => [],
+            'baz/qux'    => ['foo/bar'],
+            'fred/corge' => ['baz/qux'],
+        ];
 
-		$expected = array('foo/bar', 'baz/qux', 'fred/corge');
+        $this->assertSame($expected, $sorter->getItems());
+    }
 
-		// Because the order of our array matters, we'll implode it
-		// and compare the two string match
-		$this->assertEquals(implode('.', $expected), implode('.', $sorter->sort()));
-	}
+    /** @test */
+    public function dependencies_can_be_sorted()
+    {
+        $sorter = new DependencySorter();
 
-	public function testDependentInstances()
-	{
-		$sorter = new DependencySorter;
+        $sorter->add('baz/qux', ['foo/bar']);
+        $sorter->add('fred/corge', 'baz/qux'); // Test string dependencies
+        $sorter->add('foo/bar');
 
-		$dep1 = m::mock('Cartalyst\Dependencies\DependentInterface');
-		$dep1->shouldReceive('getSlug')->andReturn('baz/qux');
-		$dep1->shouldReceive('getDependencies')->andReturn(array('foo/bar'));
-		$sorter->add($dep1);
+        $sorted = $sorter->sort();
 
-		$dep2 = m::mock('Cartalyst\Dependencies\DependentInterface');
-		$dep2->shouldReceive('getSlug')->andReturn('fred/corge');
-		$dep2->shouldReceive('getDependencies')->andReturn('baz/qux');
-		$sorter->add($dep2);
+        $this->assertSame('foo/bar', $sorted[0]);
+        $this->assertSame('baz/qux', $sorted[1]);
+        $this->assertSame('fred/corge', $sorted[2]);
+    }
 
-		$dep3 = m::mock('Cartalyst\Dependencies\DependentInterface');
-		$dep3->shouldReceive('getSlug')->andReturn('foo/bar');
-		$dep3->shouldReceive('getDependencies')->andReturn(array());
-		$sorter->add($dep3);
+    /** @test */
+    public function it_can_add_depedent_instances()
+    {
+        $sorter = new DependencySorter();
 
-		$this->assertCount(3, $sorted = $sorter->sort());
-		$this->assertEquals($dep3, $sorted[0]);
-		$this->assertEquals($dep1, $sorted[1]);
-		$this->assertEquals($dep2, $sorted[2]);
-	}
+        $dep1 = new class() implements DependentInterface {
+            public function getSlug(): string
+            {
+                return 'baz/qux';
+            }
 
-	/**
-	 * @expectedException UnexpectedValueException
-	 */
-	public function testCircularDependenciesThrowAnException()
-	{
-		$sorter = new DependencySorter;
-		$sorter->add('foo/bar', array('bar/foo'));
-		$sorter->add('bar/foo', array('foo/bar'));
-		$sorter->sort();
-	}
+            public function getDependencies(): array
+            {
+                return [
+                    'foo/bar',
+                ];
+            }
+        };
 
-	/**
-	 * @expectedException UnexpectedValueException
-	 */
-	public function testFoo()
-	{
-		$sorter = new DependencySorter;
-		$sorter->add('foo', ['bar', 'baz']);
-		$sorter->add('baz');
-		$sorter->add('bar', 'foo');
-		$sorter->sort();
-	}
+        $dep2 = new class() implements DependentInterface {
+            public function getSlug(): string
+            {
+                return 'fred/corge';
+            }
 
-	/**
-	 * @expectedException UnexpectedValueException
-	 */
-	public function testSelfDependencyThrowsAnException()
-	{
-		$sorter = new DependencySorter;
-		$sorter->add('foo/bar', array('foo/bar'));
-		$sorter->sort();
-	}
+            public function getDependencies(): array
+            {
+                return [
+                    'foo/bar',
+                ];
+            }
+        };
 
+        $dep3 = new class() implements DependentInterface {
+            public function getSlug(): string
+            {
+                return 'foo/bar';
+            }
+
+            public function getDependencies(): array
+            {
+                return [];
+            }
+        };
+
+        $sorter->add($dep1);
+        $sorter->add($dep2);
+        $sorter->add($dep3);
+
+        $sorted     = $sorter->sort();
+        $dependents = array_keys($sorter->getDependents());
+
+        $this->assertCount(3, $sorted);
+
+        $this->assertSame($dep1->getSlug(), $dependents[0]);
+        $this->assertSame($dep2->getSlug(), $dependents[1]);
+        $this->assertSame($dep3->getSlug(), $dependents[2]);
+
+        $this->assertSame($dep3, $sorted[0]);
+        $this->assertSame($dep1, $sorted[1]);
+        $this->assertSame($dep2, $sorted[2]);
+    }
+
+    /** @test */
+    public function an_exception_will_be_thrown_when_a_dependency_has_a_circular_dependency()
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Item [foo/bar] and [bar/foo] have a circular dependency.');
+
+        $sorter = new DependencySorter();
+
+        $sorter->add('foo/bar', ['bar/foo']);
+        $sorter->add('bar/foo', ['foo/bar']);
+
+        $sorter->sort();
+    }
+
+    /** @test */
+    public function an_exception_will_be_thrown_when_a_dependency_dependends_on_itself()
+    {
+        $this->expectException(UnexpectedValueException::class);
+        $this->expectExceptionMessage('Item [foo/bar] is dependent on itself.');
+
+        $sorter = new DependencySorter();
+
+        $sorter->add('foo/bar', ['foo/bar']);
+
+        $sorter->sort();
+    }
 }
