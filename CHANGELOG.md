@@ -1,6 +1,6 @@
 # Changelog
 
-### v2.0.0 - TBA
+### v2.0.0 - 2019-08-31
 
 - BC Break: PHP 7.2 is the minimum required PHP version
 
