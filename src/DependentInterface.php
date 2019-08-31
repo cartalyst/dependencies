@@ -1,5 +1,6 @@
-<?php namespace Cartalyst\Dependencies;
-/**
+<?php
+
+/*
  * Part of the Dependencies package.
  *
  * NOTICE OF LICENSE
@@ -18,20 +19,21 @@
  * @link       http://cartalyst.com
  */
 
-interface DependentInterface {
+namespace Cartalyst\Dependencies;
 
-	/**
-	 * Get the dependent's slug (unique identifier).
-	 *
-	 * @return string
-	 */
-	public function getSlug();
+interface DependentInterface
+{
+    /**
+     * Returns the dependent's slug (unique identifier).
+     *
+     * @return string
+     */
+    public function getSlug(): string;
 
-	/**
-	 * Get an array of dependencies' slugs.
-	 *
-	 * @return string|array
-	 */
-	public function getDependencies();
-
+    /**
+     * Returns an array of dependencies slugs.
+     *
+     * @return array
+     */
+    public function getDependencies(): array;
 }
