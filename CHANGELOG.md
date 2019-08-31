@@ -1,15 +1,4 @@
-# Dependencies Change Log
-
-This project follows [Semantic Versioning](CONTRIBUTING.md).
-
-## Proposals
-
-We do not give estimated times for completion on `Accepted` Proposals.
-
-- [Accepted](https://github.com/cartalyst/dependencies/labels/Accepted)
-- [Rejected](https://github.com/cartalyst/dependencies/labels/Rejected)
-
----
+# Changelog
 
 ### v1.0.2 - 2014-01-03
 
