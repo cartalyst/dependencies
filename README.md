@@ -12,6 +12,7 @@ Part of the Cartalyst Arsenal & licensed [Cartalyst PSL](LICENSE). Code well, ro
 
 Version | PHP Version
 ------- | ------------
+2.x     | >= 7.2
 1.x     | >= 5.3.0
 
 ## Documentation
@@ -38,4 +39,4 @@ This software is released under the [Cartalyst PSL](LICENSE) License.
 [link-docs]:   https://cartalyst.com/manual/dependencies
 [link-travis]: https://travis-ci.com/cartalyst/dependencies
 
-[icon-travis]: https://travis-ci.com/cartalyst/dependencies.svg?token=LAut3LMbmBFi3T9j45FH&branch=1.0
+[icon-travis]: https://travis-ci.com/cartalyst/dependencies.svg?token=LAut3LMbmBFi3T9j45FH&branch=2.0
