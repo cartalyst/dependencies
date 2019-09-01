@@ -10,15 +10,15 @@ use Cartalyst\Dependencies\DependencySorter;
 $sorter = new DependencySorter();
 
 // Add a "foo" item who depends on "bar" and "baz"
-$sorter->add('foo', array('bar', 'baz'));
+$sorter->add('foo', ['bar', 'baz']);
 $sorter->add('baz');
 $sorter->add('bar', 'baz');
 
-var_dump($sorter->sort()); // Will spit out array('baz', 'bar', 'foo');
+var_dump($sorter->sort()); // Will spit out ['baz', 'bar', 'foo']
 
 // Circular dependencies are recognized and an exception
 // will be thrown rather than a never-ending sorting loop.
-$sorter->add('foo', array('bar', 'baz'));
+$sorter->add('foo', ['bar', 'baz']);
 $sorter->add('baz');
 $sorter->add('bar', 'foo');
 var_dump($sorter->sort());
@@ -34,44 +34,45 @@ Our sorter also has the ability to take classes which implement Cartalyst\Depend
 use Cartalyst\Dependencies\DependencySorter;
 use Cartalyst\Dependencies\DependentInterface;
 
-class Asset implements DependentInterface {
-
+class Asset implements DependentInterface
+{
     protected $slug;
 
     protected $path;
 
-    protected $dependencies = array();
+    protected $dependencies = [];
 
-    public function __construct($slug, $path, $dependencies = array())
+    public function __construct(string $slug, string arra $path, $dependencies = [])
     {
         $this->slug = $slug;
+
         $this->path = $path;
+
         $this->dependencies = $dependencies;
     }
 
-    public function getSlug()
+    public function getSlug(): string
     {
         return $this->slug;
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return $this->dependencies;
     }
 
-    public function getPath()
+    public function getPath(): string
     {
         return $this->path;
     }
-
 }
 
-// Queue assets in a dependency sorter
-$sorter = new DependencySorter(array(
+// Queue assets in a Dependency Sorter instance
+$sorter = new DependencySorter([
     new Asset('bootstrap', 'js/bootstrap-2.3.1.js', 'jquery'),
     new Asset('jquery', 'js/bootstrap-1.9.1.min.js'),
-    new Asset('main', 'js/main.js', array('jquery', 'bootstrap')),
-));
+    new Asset('main', 'js/main.js', ['jquery', 'bootstrap']),
+]);
 
 $assets = $sorter->sort();
 
