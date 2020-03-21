@@ -46,8 +46,12 @@ class DependencySorter
      */
     public function __construct(array $items = [])
     {
-        foreach ($items as $item => $dependencies) {
-            $this->add($item, $dependencies);
+        foreach ($items as $index => $item) {
+            if ($item instanceof DependentInterface) {
+                $this->addDependent($item);
+            } else {
+                $this->addItem($index, $item);
+            }
         }
     }
 
