@@ -12,11 +12,11 @@
  * the following URL: http://www.opensource.org/licenses/BSD-3-Clause
  *
  * @package    Dependencies
- * @version    2.0.0
+ * @version    2.0.1
  * @author     Cartalyst LLC
  * @license    BSD License (3-clause)
- * @copyright  (c) 2011-2019, Cartalyst LLC
- * @link       http://cartalyst.com
+ * @copyright  (c) 2011-2020, Cartalyst LLC
+ * @link       https://cartalyst.com
  */
 
 namespace Cartalyst\Dependencies\Tests;

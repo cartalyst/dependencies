@@ -1,5 +1,11 @@
 # Changelog
 
+### v2.0.1 - 2020-03-21
+
+`FIXED`
+
+- Regression when adding items through the constructor.
+
 ### v2.0.0 - 2019-08-31
 
 - BC Break: PHP 7.2 is the minimum required PHP version
