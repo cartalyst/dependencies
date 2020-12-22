@@ -1,5 +1,9 @@
 # Changelog
 
+### v2.1.0 - TBA
+
+- Add PHP 8 support
+
 ### v2.0.1 - 2020-03-21
 
 `FIXED`
